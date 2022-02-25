@@ -859,6 +859,7 @@ rm -r $tgt_lang/LG.fst   # We don't need to keep this intermediate FST
 
 到此，我们完成了数据文件的准备以及TLG.fst的生成，TLG.fst画图如下：
 
+![1645786971(1)](https://user-images.githubusercontent.com/99643269/155704389-e49695bb-cbc4-4f68-9483-82126f962e59.jpg)
 
 	
 
