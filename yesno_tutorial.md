@@ -14,15 +14,15 @@
 * [4.神经网络训练准备](#4-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E8%AE%AD%E7%BB%83%E5%87%86%E5%A4%87)
 * [5.模型训练](#5-%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83)
 * [6.解码](#6-%E8%A7%A3%E7%A0%81)
-* 
-这份文档的目的是，**通过搭建一个简单的语音识别项目，帮助初学者更多了解CAT的工作流程，先知其然。** 欲知其所以然，建议进一步阅读以下基本文献。
+* [7.结果分析](#7-结果分析)
+此文档的目的是让大家了解kaldi工具包的使用，**通过搭建一个简单的语音识别项目，帮助初学者更多了解CAT的工作流程，先知其然，在知其所以然，如果想要更多了解建议进一步阅读以下基本文献。
 
 - L. R. Rabiner, “A tutorial on hidden Markov models and selected applications in speech recognition”, Proceedings of the IEEE, 1989.
 - A. Graves, S. Fernandez, F. Gomez, and J. Schmidhuber, “Connectionist temporal classiﬁcation: Labelling unsegmented sequence data with recurrent neural networks”, ICML, 2006.
 - Hongyu Xiang, Zhijian Ou, "CRF-based Single-stage Acoustic Modeling with CTC Topology", ICASSP, 2019.
 - Zhijian Ou, "State-of-the-Art of End-to-End Speech Recognition", Tutorial at The 6th Asian Conference on Pattern Recognition (ACPR2021), Jeju Island, Korea, 2021.
 
-**[CAT workflow](https://github.com/thu-spmi/CAT/blob/master/toolkitworkflow.md)已经整理了CAT的工作流程，分为六步，前五步为训练，第六步是识别测试（又称解码）。** 这份文档将根据[CAT workflow](https://github.com/thu-spmi/CAT/blob/master/toolkitworkflow.md)，更具体地以一个简单语音识别项目（yesno项目）为例，对CAT工作流程加以解释。
+**[CAT workflow](https://github.com/thu-spmi/CAT/blob/master/toolkitworkflow.md)已经整理了CAT的工作流程，分为六步，前五步为训练，第六步是解码。** 这份文档将根据[CAT workflow](https://github.com/thu-spmi/CAT/blob/master/toolkitworkflow.md)，更具体地以一个简单语音识别项目（yesno项目）为例，对CAT工作流程加以解释。
 
 yesno语音识别项目，来自[Kaldi中的yesno项目](https://github.com/kaldi-asr/kaldi/tree/master/egs/yesno)。如下所述，yesno项目只含有两个词汇，yes和no；一句话中会包含多个由希伯来语（Hebrew）说的yes和no。
 
@@ -34,49 +34,51 @@ http://www.openslr.org/1.
 
 ## 项目目录结构
 
-**一个语音识别项目**，指在一个特定数据集上的特定语音识别任务。在CAT中，不同的语音识别项目，都位于`egs`中的不同目录，egs是examples（示例）的缩写。以下为yesno项目的目录结构，通过该目录结构可以先一窥CAT中语音识别项目的大致构成。
+**一个语音识别项目**，指在一个特定的数据集上的项目，通常各个项目在egs文件目录下，也可以尝试训练egs目录下的其它数据集实验。
 
 **yesno**
 
 ```
-├── cmd.sh #使用脚本配置
+├── cmd.sh #脚本配置
 ├── path.sh #环境变量配置
-├── run.sh #主程序
-├── conf #配置文件存放目录
+├── run.sh #实验主程序
+├── conf #配置文件目录
 │   ├── decode_dnn.config #解码
-│   ├── fbank.conf #fbank提取
-│   └── mfcc.conf #mfcc提取
+│   ├── fbank.conf #fbank提取
+│   └── mfcc.conf #mfcc提取
 ├── ctc-crf -> ../../scripts/ctc-crf #ctc-crf程序
-├── exp #项目文件目录
-│   ├── demo #demo项目
-│   │   └── config.json #demo项目的训练参数
-├── input #输入目录（非必需）
-│   └── lexicon.txt #手动准备的词典
-├── local #存放主程序运行过程中用到的模块化代码
-│   ├── create_yesno_txt.pl #数据预处理waves.txt
-│   ├── create_yesno_waves_test_train.pl #数据集划分
-│   ├── create_yesno_wav_scp.pl #数据预处理waves.scp
-│   ├── get_word_map.pl #对每个词建立映射
+├── exp #模型配置
+│   ├── demo #demo模型
+│   │   └── config.json #demo模型的训练参数
+├── input #输入目录
+│   └── lexicon.txt #yesno字典
+├── local #存放主程序运行各部分脚本块
+│   ├── create_yesno_txt.pl #数据预处理waves.txt(音频ID和对应本地路径)
+│   ├── create_yesno_waves_test_train.pl #数据训练开发集划分
+│   ├── create_yesno_wav_scp.pl #数据预处理waves.scp（音频ID和对应音频内容）
+│   ├── get_word_map.pl #对每个词建立映射
 │   ├── prepare_data.sh #数据预处理程序
 │   ├── prepare_dict.sh #词典预处理程序
-│   ├── score.sh #打分脚本（如果需要CER必须编写）
-│   ├── yesno_decode_graph.sh #fst文件整理打包程序
-│   └── yesno_train_lms.sh #语言模型训练程序
-├── steps -> /myhome/kaldi/egs/wsj/s5/steps #链接到kaldi中同名目录，包含各个训练阶段的子脚本，如特征提取 make_fbank.sh等
+│   ├── score.sh #打分脚本（WER）
+│   ├── yesno_decode_graph.sh #fst文件整理打包
+│   └── yesno_train_lms.sh #语言模型训练
+├── steps -> /myhome/kaldi/egs/wsj/s5/steps #链接到kaldi中同名目录，包含各个训练阶段的子脚本，如特征提取 make_fbank.sh等，此路径软连接到Kaldi所在路径
 └── utils -> /myhome/kaldi/egs/wsj/s5/utils #链接到kaldi中同名目录，用于协助处理，如数据复制与验证等
 ```
 
-下面我们将利用CAT和yesno数据，一步步搭建一个语音识别项目，请确保您已经完成了[CAT环境配置](https://github.com/HPLQAQ/CAT-tutorial/blob/master/environment.md)和[CAT的安装](https://github.com/thu-spmi/CAT#Installation)。
+接下来我们将利用CAT和yesno数据，一步步搭建一个语音识别项目，再次之前请确保您已经完成了[CAT环境配置](https://github.com/HPLQAQ/CAT-tutorial/blob/master/environment.md)和[CAT的安装](https://github.com/thu-spmi/CAT#Installation)。
 
 
 ## 0. 文件准备
 
-在这个部分中，我们先准备好项目的框架。
+在这部分中，我们先准备好项目所需要的整体框架。
 
-1. 在egs下创建目录yesno
+1. 在egs下创建yesno目录
 
-2. 编写以下两个个文件
-
+2. 编写以下两个脚本
+CAT toolkit: 一般无需修改默认路径即可
+Kaldi:路径需要修改到下载好的kaldi根目录下
+Data:你的yesno根目录下
    - **path.sh**
 
      ```shell
@@ -95,9 +97,9 @@ http://www.openslr.org/1.
      export DATA_ROOT=data/yesno
      ```
 
-     配置全局的环境变量，分别配置CAT、kaldi、数据集的环境变量，代码来源为`egs\wsj`项目下的同名文件。
+     配置全局的环境变量，分别配置CAT、kaldi、Data(数据集的环境变量)，代码来源为`egs\wsj`项目下的同名文件。
 
-     创建完后可以在终端里运行一遍`. ./path.sh`，以方便接下来配置。
+     创建完后可以在终端里运行一遍`./path.sh`，没有问题后我们进行下一步。
 
    - **cmd.sh**
 
@@ -108,9 +110,9 @@ http://www.openslr.org/1.
      export cuda_cmd=run.pl
      ```
 
-     这里是沿用来自kaldi的并行化工具，适应不同的环境可以配置queue.pl等以及不同的参数。此处使用run.pl即可。
+     这里是沿用来自kaldi的并行化工具，适应不同的环境可以配置queue.pl等以及不同的参数。一般情况下我们默认run.pl即可。
 
-3. 创建链接到kaldi以及CAT工具包的目录，便于代码的编写以及迁移
+3. 创软连接到kaldi以及CAT工具包的目录，便于代码的编写以及迁移
 
    ```shell
    ln -s ../../scripts/ctc-crf ctc-crf
@@ -118,15 +120,15 @@ http://www.openslr.org/1.
    ln -s $KALDI_ROOT/egs/wsj/s5/steps steps
    ```
 
-4. 创建local目录，存放本项目专用的数据处理，训练等脚本文件
+4. 创建local目录，存放本项目专用数据集，训练，切分，打分等脚本编写
 
-5. 创建**run.sh**，在run.sh中完成我们整个工作流程的编写
+5. 创建**run.sh**，我们在run.sh完成整体编写
 
    ```shell
    #!/bin/bash
    
-   # Copyright 2018-2021 Tsinghua University
-   # Author: Siwei Li
+   # Copyright 2022 TasiTech
+   # Author: Ziwei Li
    # yesno for CAT
    
    # environment
@@ -136,8 +138,9 @@ http://www.openslr.org/1.
    #set 
    H=`pwd`  # home dir
    n=12     # parallel jobs=$(nproc)
-   stage=1  # set work stages
+   stage=0  # set work stages
    stop_stage=9
+   change_config=0
    yesno=$DATA_ROOT  #data root
    
    . utils/parse_options.sh
@@ -157,14 +160,14 @@ http://www.openslr.org/1.
    fi
    ```
    
-   $NODE指实验运行的节点数，若运行run.sh时直接传参节点数，则进入多节点联合训练的环节；否则先进行数据准备，用stage和stop_stage控制运行的代码部分。
+   $NODE指实验运行的节点数，若运行run.sh时直接传参节点数，用stage和stop_stage控制代码运行部分。
 
 ## 1. 数据准备
 Step 1: [Data preparation](https://github.com/thu-spmi/CAT/blob/master/toolkitworkflow.md#Data-preparation)
 
-自此进入[CAT workflow](https://github.com/thu-spmi/CAT/blob/master/toolkitworkflow.md)的工作流程，我们按顺序编写每个脚本。
+我们完成了框架准备自此进入[CAT workflow](https://github.com/thu-spmi/CAT/blob/master/toolkitworkflow.md)的工作流程，我们按顺序编写每个脚本。
 
-在run.sh中step 1，我们完成以下步骤：获取数据，建立词典，训练语言模型。
+在run.sh中step 1，我们完成以下步骤：获取训练数据，建立所需字典，训练语言模型。
 
 以下为step 1的代码，在本节中我们会详细解释这部分代码的思路。
 
@@ -188,7 +191,7 @@ fi
 
 ### prepare_data.sh
 
-我们将数据准备的步骤集成到prepare_data.sh中。在prepare.sh完成后，我们期望获得以及划分为训练集与开发集的data（wav.scp），说话人信息（spk2utt、utt2spk，均为global），标注文本（text），分别存储在data/dev,data/train下，你也可以尝试自己实现这部分功能。
+我们将数据下载准备的步骤放在prepare_data.sh中完成。在prepare.sh完成后，我们期望获得以及划分为训练集(train)与开发集(dev)的data（wav.scp），说话人信息（spk2utt、utt2spk，z这里说话人我们默认他为global），标注文本信息（text），分别存储在data/dev,data/train下。
 
 1. 在local目录下创建文件prepare_data.sh，并获取数据
 
@@ -213,11 +216,11 @@ fi
    fi
    ```
 
-   这一步完成后，我们在data/waves_yesno下得到原始数据，每个wav文件的标题为该文件的内容。
+   这一步完成后，我们在data/waves_yesno下得到原始音频数据集。
 
-2. 将数据划分为训练集和开发集
+2. 由于数据且没有划分，这部分我们将音频数据集划分为训练集(train)和开发集(dev)
 
-   注：此处直接将开发集作为测试集，可以修改
+   注：由于数据量较小此处直接将开发集作为测试集，可以修改
 
    ```shell
    echo "Preparing train and dev data"
@@ -230,12 +233,14 @@ fi
    cd ${data}/local
    ${local}/create_yesno_waves_test_train.pl waves_all.list waves.dev waves.train
    ```
-
+  
+  我们完成后生成create_yesno_waves_test_train.pl后我们对其进行编写
+   
    **create_yesno_waves_test_train.pl**
 
    注：这部分代码来源于kaldi中yesno项目
 
-   .pl为perl代码，代码特点为简洁高效，文本处理方便，缺点为较难懂。
+   .pl为perl代码，此部分代码比较难理解。
 
    ```perl
    #!/usr/bin/env perl
@@ -271,7 +276,9 @@ fi
    }
    ```
 
-   等分$full_list:waves_all.list到waves.dev, waves.train
+   等分waves_all.list到waves.dev, waves.train中
+
+我们继续回到
 
 3. 生成\*_wav.scp, \*.txt(\*代指train, test, dev)
 
