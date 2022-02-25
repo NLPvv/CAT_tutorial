@@ -2,7 +2,7 @@
 
 **目录**
 * [项目目录结构](#项目目录结构)
-* [0.文件准备](#0-%E6%96%87%E4%BB%B6%E5%87%86%E5%A4%87)
+* [0.文件准备](#0-文件准备)
 * [1.数据准备](#1-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87)
 * 	* [prepare_data.sh](#prepare_datash)
 	* [prepare_dict.sh](#prepare_dictsh)
@@ -14,6 +14,7 @@
 * [4.神经网络训练准备](#4-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E8%AE%AD%E7%BB%83%E5%87%86%E5%A4%87)
 * [5.模型训练](#5-%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83)
 * [6.解码](#6-%E8%A7%A3%E7%A0%81)
+* 
 这份文档的目的是，**通过搭建一个简单的语音识别项目，帮助初学者更多了解CAT的工作流程，先知其然。** 欲知其所以然，建议进一步阅读以下基本文献。
 
 - L. R. Rabiner, “A tutorial on hidden Markov models and selected applications in speech recognition”, Proceedings of the IEEE, 1989.
