@@ -15,6 +15,7 @@
 * [5.模型训练](#5-%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83)
 * [6.解码](#6-%E8%A7%A3%E7%A0%81)
 * [7.结果分析](#7-结果分析)
+
 此文档的目的是让大家了解kaldi工具包的使用，**通过搭建一个简单的语音识别项目，帮助初学者更多了解CAT的工作流程，先知其然，在知其所以然，如果想要更多了解建议进一步阅读以下基本文献。
 
 - L. R. Rabiner, “A tutorial on hidden Markov models and selected applications in speech recognition”, Proceedings of the IEEE, 1989.
@@ -278,7 +279,7 @@ fi
 
    等分waves_all.list到waves.dev, waves.train中
 
-我们继续回到
+我们继续回到prepare.data.sh生成test.txt和wave.scp
 
 3. 生成\*_wav.scp, \*.txt(\*代指train, test, dev)
 
@@ -295,7 +296,9 @@ fi
    ${local}/create_yesno_txt.pl waves.dev > test.txt #id to content
    ```
 
-   **create_yesno_wav_scp.pl**
+生成*.scp文件格式为音频ID和对应的存储位置
+  
+  **create_yesno_wav_scp.pl**
 
    创建*.scp文件，内容为文件名对应的存储位置。
 
@@ -315,6 +318,8 @@ fi
    	print "$l $full_path\n";
    }
    ```
+生成*.txt文件，未见内容为音频ID和对应的文本内容
+
 
    **create_yesno_txt.pl**
 
@@ -339,6 +344,9 @@ fi
    }
    ```
 
+最后编写prepare_data.sh生成utt2spk，spk2utt
+   
+
 4. 将数据转移到data/dev, data/train, data/test下，并生成utt2spk, spk2utt
 
    ```shell
@@ -353,16 +361,16 @@ fi
    done
    ```
 
-   utils和step目录下的脚本均为kaldi的脚本，在代码目录下打开有详细注释。
+   utils和step目录下的脚本均为kaldi的脚本，在其目录下有详细解释。
 
    这一流程完成后，data下的目录结构为：
    
    ```
    ├── dev #开发集
-   │   ├── spk2utt #说话人-音频名
-   │   ├── text #音频名-文本
-   │   ├── utt2spk #音频名-说话人
-   │   └── wav.scp #音频名-文件位置
+   │   ├── spk2utt #说话人-音频ID
+   │   ├── text #音频ID-文本
+   │   ├── utt2spk #音频ID-说话人
+   │   └── wav.scp #音频ID-文件位置
    ├── train #训练集
    │   ├── spk2utt
    │   ├── text
@@ -380,10 +388,10 @@ fi
    │   ├── test_wav.scp
    │   ├── train.txt
    │   ├── train_wav.scp
-   │   ├── waves.dev #开发集的文件名列表
-   │   ├── waves.train
+   │   ├── waves.dev 
+   │   ├── waves.train #训练集文件名列表
    │   └── waves_all.list
-   └── waves_yesno #数据储存位置
+   └── waves_yesno #音频数据集存储位置
    ```
 
    以下展示train目录下的文件的部分内容：
@@ -436,7 +444,7 @@ fi
    
    通过生成这些固定格式的文件，我们可以方便地使用kaldi的工具来优化工作流程。
    
-   你现在的目录结构应该是：
+   当前目录下：
    
    ```
    ├── cmd.sh
@@ -460,13 +468,13 @@ fi
 
 ### prepare_dict.sh
 
-将词典准备的工作集成到prepare_dict.sh中。
+在prepare_dict.sh中准备我们此次的词典。
 
 通过这部分代码，我们期待在data/dict下获得经过去重和补充噪音<NOISE>、人声噪声<SPOKEN_NOISE>、未知词<UNK>等的词典lexicon.txt，排序并用数字编号的声学单元units.txt，以及用数字标号的词典，lexicon_numbers.txt。
 
-声学单元的选择是灵活的，可以是音素phone、英文字母character、汉字、词片段wordpiece等。词典（lexicon）的作用是，将待识别的词汇表（vocabulary）中的词分解为声学单元的序列。
+声学单元的选择有多种，可以是音素phone、英文字母character、汉字、片段wordpiece等。词典（lexicon）的作用是，将待识别的词汇表（vocabulary）中的词分解为声学单元的序列。
 
-1. 自己准备原始词典，在input/lexicon.txt中 （注：#为注释，原文件不包含，后面不再说明）
+1. 由于我们yesno实验所需词典较小，在input/lexicon.txt中
 
    ```
    <SIL> SIL #静音silence
@@ -474,7 +482,7 @@ fi
    NO N
    ```
 
-2. 编写local/prepare_dict.sh，详见注释
+2. 编写local/prepare_dict.sh
 
    ```shell
    #!/bin/bash
@@ -514,15 +522,15 @@ fi
    echo "Phoneme-based dictionary preparation succeeded"
    ```
 
-   这一脚本运行完成后，data目录下生成了一个dict文件夹：
+   通过这一脚本的运行后，data目录下会生成一个dict目录如下：
 
    ```
    ├── dict
    │   ├── lexicon_raw.txt #原词典去重和去非语言学发音
-   │   ├── units_raw.txt #lexicon_raw词典中的所有音素去重
+   │   ├── units_raw.txt #lexicon_raw词典中音素去重
    │   ├── lexicon.txt #lexicon_raw词典加入非语言学发音并排序
-   │   ├── units.txt #units_raw加入非语言学发音并排序标号
-   │   └── lexicon_numbers.txt #用units.txt中的音素标号替代词典中的音素
+   │   ├── units.txt #units_raw所有音素标号
+   │   └── lexicon_numbers.txt #用units.txt代表词典标号
    ```
 
    以下展示dict中文件的部分内容：
@@ -548,9 +556,9 @@ fi
    **lexicon.txt**
    
    ```
-   <NOISE> <NSN> #自然噪音
-   <SPOKEN_NOISE> <SPN> #人声噪音
-   <UNK> <SPN> #未知词，默认为人声噪音
+   <NOISE> <NSN> #自认噪声
+   <SPOKEN_NOISE> <SPN> #人声噪声
+   <UNK> <SPN> #未知词
    NO N
    YES Y
    ```
@@ -578,19 +586,20 @@ fi
    YES 4
    ```
    
-   在yesno数据集中并没有自然噪音<NOISE>和人声噪音<SPOKEN_NOISE>，所以你可以修改代码去掉这些单元，此处加入是为做一般性说明。
+   yesno数据集上人声噪声和自然噪声可以忽略。
 
 ### T.fst & L.fst
 
-这时，你需要对FST（Finite State Transducers 有限状态转换器）有一定的了解。与很多文献和网站中一样，FST常与WFST（Weighted Finite State Transducers 加权有限状态转换器）的称呼混用。安装openfst正是为了使用(W)FST。如下图所示，理论上，一个加权有限状态转换器表示了输入符号序列与输出符号序列的一个加权关系（Theoretically, a WFST represents a weighted relation between sequences of input symbols and sequences of output symbols.）
+FST（Finite State Transducers 有限状态转换器）FST常与WFST（Weighted Finite State Transducers 加权有限状态转换器）的称呼混用，与之不同的是WFST在转移路径上附加了权重。安装openfst正是为了使用(W)FST。如下图所示，理论上，一个WFST表示了输入符号序列和输出符号序列的加权关系。
 
-![Wfst-example](./assets/WFST-ozj.png)
+![image](https://user-images.githubusercontent.com/99643269/155666356-92e92073-0dc9-44af-b535-7a55392f23e6.png)
 
-更多了解请阅读：
+
+想要了解更多了解以下文献：
 
 [M. Mohri, F. Pereira, and M. Riley, “Speech Recognition with Weighted Finite-State Transducers”, Handbook on Speech Processing and Speech, Springer, 2008.](https://cs.nyu.edu/~mohri/pub/hbka.pdf)
 
-根据发音词典、CTC需要的token <eps>、<blk>，我们生成词典（Lexicon）的L.fst以及表示CTC拓扑的T.fst。此处用到我们在prepare_dict.sh中准备好的lexicon.txt, units.txt, lexicon_numbers.txt这3个文件。
+根据发音词典、CTC需要的token，我们生成词典（Lexicon）的L.fst以及CTC生成的T.fst。此处用到我们在prepare_dict.sh中准备好的lexicon.txt, units.txt, lexicon_numbers.txt这3个文件去生成。
 
 ```shell
 # Compile the lexicon and token FSTs
@@ -603,18 +612,18 @@ ctc-crf/ctc_compile_dict_token.sh --dict-type "phn" \
 
 ***fst文件的可视化，参考[https://www.cnblogs.com/welen/p/7611320.html]、[https://www.dazhuanlan.com/shitou103/topics/1489883]***
 
-这一步中，脚本先通过lexicon_numbers.txt, units.txt生成了words.txt, tokens.txt，然后生成了T.fst, L.fst。
+通过这一步，脚本依次通过lexicon_numbers.txt, units.txt生成了words.txt, tokens.txt，进而生成了T.fst, L.fst。
 
-**words.txt** （记录了L.fst的output symbol inventory，也是G.fst的input symbol inventory）
+**words.txt** （代表了L.fst的output symbol inventory，也就是G.fst的input symbol inventory）
 
 ```
-<eps> 0 #epsilon，空标签，代表跳转输出标签为空
+<eps> 0 #epsilon，空标签，跳出标签为空
 <NOISE> 1
 <SPOKEN_NOISE> 2
 <UNK> 3
 NO 4
 YES 5
-#0 6 #语言模型G的回退符，用于G.fst的确定化
+#0 6 #语言模型G的回退符，确定G.fst
 <s> 7 #起始
 </s> 8 #结束
 ```
@@ -640,13 +649,15 @@ Y 5
 
 **T.fst**
 
-![Tfst](./assets/Tfst.png)
+![image](https://user-images.githubusercontent.com/99643269/155668440-0c073e34-b1b1-4eed-81ef-c0c9f571996b.png)
 
-**L.fst**（注：如果L.fst中没有#3的话，则T.fst中#3也没有必要。历史上若使用HMM拓扑，则需要引入SIL unit，每个词汇可接SIL也可不接，因而L.fst需要#3进行消岐。本例使用CTC拓扑，L.fst不用#3）
 
-![Lfst](./assets/Lfst.png)
+**L.fst**（注：如果L.fst中没有#3的话，则T.fst中#3也没有必要。历史上若使用HMM拓扑，则需要引入SIL unit，每个词汇可接SIL也可以不接，因而L.fst需要#3进行消岐。本例使用CTC拓扑，L.fst不用#3）
 
-为了便于对比理解，我们去掉\<NOISE\>,  \<SPOKEN_NOISE\>再看一下生成的fst图，此时：
+![image](https://user-images.githubusercontent.com/99643269/155668677-170b184b-d4ee-41ee-97b3-70b0e76c0390.png)
+
+
+为方便观察，我们去掉\<NOISE\>,  \<SPOKEN_NOISE\>展示fst生成图，当前：
 
 **words.txt**
 
@@ -672,17 +683,19 @@ Y 3
 
 **T.fst**
 
-![Tfst0](./assets/Tfst0.png)
+![image](https://user-images.githubusercontent.com/99643269/155668843-2d4f220a-e620-460e-ba80-3f4af00ce5b6.png)
 
-**L.fst**（注：如果L.fst中没有#1的话，则T.fst中#1也没有必要）
 
-![Lfst0](./assets/Lfst0.png)
+**L.fst**
+
+![image](https://user-images.githubusercontent.com/99643269/155668907-978dea70-0df2-45f9-9e77-e633174c1d43.png)
+
 
 ### G.fst
 
-根据train/text、dict/lexicon.txt，生成语言模型的G.fst。
+根据data/train/text、dict/lexicon.txt，生成生成语言模型G.fst。
 
-这部分训练我们通过srilm工具完成，集成到local/yesno_train_lms.sh中。
+这部分训练我们通过srilm工具完成，放到local/yesno_train_lms.sh中。
 
 ```shell
 # Train and compile LMs. Generate G.fst according to lm, and compose FSTs into TLG.fst
@@ -764,7 +777,7 @@ file data/lm/srilm/heldout: 3 sentences, 24 words, 0 OOVs
 0 zeroprobs, logprob= -11.09502 ppl= 2.575885 ppl1= 2.899294
 ```
 
-srilm工具的使用可以见工具的readme，训练中需要处理的文件储存在data/lm目录下，我们将srilm的训练结果存储在data/lm/srilm下。使用1-gram的语言模型的结果，储存到srilm.o1g.kn中，语言模型如下：
+srilm工具的使用可以见工具下的README，训练中需要处理的文件存放在data/lm目录下，我们将srilm的训练结果存储在data/lm/srilm下。yesno实验使用1-gram的语言模型的结果，储存到srilm.o1g.kn中，语言模型如下：
 
 **srilm.o1g.km**
 
@@ -788,17 +801,18 @@ ngram 1=7
 
 **G.fst**
 
-![Gfst](./assets/G.png)
+![image](https://user-images.githubusercontent.com/99643269/155669557-3ab9d8db-98eb-48a7-8de5-13a461d404c0.png)
+
 
 ### TLG.fst
 
-把以上生成的fst文件进行组合（composition），生成TLG.fst。
+把以上生成的fst文件进行重组，生成TLG.fst。
 
 ```shell
 local/yesno_decode_graph.sh data/lm/srilm/srilm.o1g.kn.gz data/lang data/lang_test || exit 1;
 ```
 
-这部分代码中，我们先将语言模型根据word.txt打包到G.fst中，因为arpa格式的语言模型已经足够直观，此处不再做可视化，然后用openfst组合出TLG.fst，用于训练。
+这部分代码中，我们先将语言模型根据word.txt打包到G.fst中，然后用openfst组合出TLG.fst，用于训练。
 
 **yesno_decode_graph.sh**
 
@@ -845,7 +859,8 @@ rm -r $tgt_lang/LG.fst   # We don't need to keep this intermediate FST
 
 到此，我们完成了数据文件的准备以及TLG.fst的生成，TLG.fst画图如下：
 
-![TLGfst](./assets/TLG.png)
+
+	
 
 现在你的data目录结构应该如下：
 
@@ -902,7 +917,7 @@ rm -r $tgt_lang/LG.fst   # We don't need to keep this intermediate FST
 └── waves_yesno
 ```
 
-请再次确认你是否理解这个目录结构中每个文件的来源和意义。
+至此我们已经完成yesno项目搭建的90%，再次确认目录下每个文件代表内容。
 
 关于词典文件的说明较为简略，希望进一步了解每一个文件的意义，请阅读[Kaldi Data preparation](https://kaldi-asr.org/doc/data_prep.html)文档。
 
@@ -919,7 +934,7 @@ Step 2: [Feature extraction](https://github.com/thu-spmi/CAT/blob/master/toolkit
 --num-mel-bins=40
 ```
 
-分别为音频采样率和滤波器个数，yesno数据集数据采样率为8000，滤波器个数我们取40。
+分别为音频采样率和滤波器个数，yesno数据集音频采样率为8000，滤波器个数我们取40。
 
 ***关于FBank：[https://www.jianshu.com/p/b25abb28b6f8]***
 
@@ -946,21 +961,21 @@ if [ $stage -le 2 ] && [ $stop_stage -ge 2 ]; then
 fi
 ```
 
-在提取声音文件的特征时，此处使用了将声音进行0.9、1.0、1.1三种变速的操作，在一些识别任务中可以取得更好的识别性能。yesno项目中无需采用该操作，此处使用该代码作为演示。相关脚本简要说明如下：
+在提取声音文件的特征时，此处使用了将声音进行0.9、1.0、1.1三种变速的操作，在一般识别任务中效果会更好。yesno项目我们不做此操作，此处使用该代码作为演示。相关脚本简要说明如下：
 
-* utils/data/perturb_data_dir_speed_3way.sh：变速
+* utils/data/perturb_data_dir_speed_3way.sh：变速脚本
 
-* steps/make_fbank.sh：fbank提取
+* steps/make_fbank.sh：fbank提取脚本
 
-* utils/fix_data_dir.sh：数据排序和过滤
+* utils/fix_data_dir.sh：数据排序与过滤
 
-* steps/compute_cmvn_stats.sh：特征归一化，cmvn是指cepstra mean and variance normalization，即减去均值，除以标准差的操作。早期语音识别中提取的音频特征是cepstra（倒谱），故由此得名。在FBank特征得归一化处理，也沿用了该称呼。
+* steps/compute_cmvn_stats.sh：特征归一化，cmvn是指cepstra mean and variance normalization，即减去均值除以标准差的操作。早期语音识别中提取的音频特征是倒谱，故由此得名。在FBank特征得归一化处理，也沿用了该称呼。
 
 ## 3. 准备分母图语言模型
 
 Step 3: [Denominator LM preparation](https://github.com/thu-spmi/CAT/blob/master/toolkitworkflow.md#Denominator-LM-preparation)
 
-在第3步，我们先得到得到训练集中每句话的标签（label）序列，可能用到的标签集（label inventory）保存在units.txt。然后，通过计算标签序列的语言模型并将其表示成den_lm.fst。最后，由den_lm.fst和标签文件出发，计算出标签序列$l$的对数概率 $logp(l)$，称为path weight。详细的步骤内容见注释。
+在第3步，我们先得到得到训练集中每句话的标签（label）序列，可能用到的标签集（label inventory）保存在units.txt中。然后，通过计算标签序列的语言模型并将其表示成den_lm.fst。最后，由den_lm.fst和标签文件出发，计算出标签序列$l$的对数概率 $logp(l)$，称为path weight。详细的步骤内容见注释。
 
 ```shell
 data_tr=data/train_sp
@@ -1036,7 +1051,7 @@ fi
 
 Step 5: [Model training](https://github.com/thu-spmi/CAT/blob/master/toolkitworkflow.md#Model-training)
 
-此时模型训练需要的所有数据已经准备完成，剩下只需要在exp下创建你的一次实验的文件夹（例：demo），建立config.json，此处yesno我们采用：
+此时模型训练需要的所有数据已经准备完成，剩下只需要在exp下创建你的一次实验的文件夹(demo)，建立config.json，此处yesno实验可以将config.json进行修改多次实验：
 
 ```json
 {
@@ -1114,9 +1129,9 @@ if [ $stage -le 6 ] && [ $stop_stage -ge 6 ]; then
 fi
 ```
 
-通过以上代码即可完成模型训练。训练的过程可以在你创建的demo目录下的monitor.jpg中找到。
+通过以上代码即可完成模型训练。训练的过程图展示可以在你创建的demo目录下的monitor.jpg中找到。
 
-如果需要重新训练，删除scripts.tar.gz和ckpt文件夹即可，yesno数据集的训练可能不太稳定，如果训练集loss不下降，可以考虑重新训练。
+如果需要重新训练，删除scripts.tar.gz和ckpt文件即可。
 
 ## 6. 解码
 
@@ -1157,7 +1172,7 @@ if [ $stage -le 9 ] && [ $stop_stage -ge 9 ]; then
 fi
 ```
 
-恭喜你已经完成了你的第一个yesno语音识别项目的搭建，训练和解码。
+恭喜你已经完成了你的第一个yesno语音识别项目的搭建，训练和解码过程。
 
 现在你的目录结构应该如下图所示：
 
@@ -1187,17 +1202,8 @@ fi
 ├── steps -> /myhome/kaldi/egs/wsj/s5/steps
 └── utils -> /myhome/kaldi/egs/wsj/s5/utils
 ```
-
-以下是其中一次训练的结果展示：
-
-![yesno_monitor_eg](./assets/yesno_monitor_eg.png)
-
-识别的结果如下：
-
-```
-%WER 1.67 [ 4 / 240, 1 ins, 1 del, 2 sub ]
-```
-
-识别的详细log在exp/demo/decode_test中。
-
-在训练完成后，请在demo文件夹下自动生成的readme.md文件中，完善你对这次实验的必要记录和说明。
+## 7. 结果分析
+	
+	
+	
+	
