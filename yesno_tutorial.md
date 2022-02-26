@@ -192,7 +192,7 @@ fi
 
 ### prepare_data.sh
 
-我们将数据下载准备的步骤放在prepare_data.sh中完成。在prepare.sh完成后，我们期望获得以及划分为训练集(train)与开发集(dev)的data（wav.scp），说话人信息（spk2utt、utt2spk，z这里说话人我们默认他为global），标注文本信息（text），分别存储在data/dev,data/train下。
+我们将数据下载准备的步骤放在prepare_data.sh中完成。在prepare.sh完成后，我们期望获得以及划分为训练集(train)与开发集(dev)的data（wav.scp），说话人信息（spk2utt、utt2spk，这里说话人我们默认他为global），标注文本信息（text），分别存储在data/dev,data/train下。
 
 1. 在local目录下创建文件prepare_data.sh，并获取数据
 
