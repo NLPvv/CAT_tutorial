@@ -1211,9 +1211,8 @@ fi
 
 
 
-最好的一次VGGBLSTM结果图如下：
-	
-	![monitor](https://user-images.githubusercontent.com/99643269/155908900-9fe3122d-b223-43f8-88e7-cc60a260a464.png)
+最好的一次VGGBLSTM结果图如下：![monitor](https://user-images.githubusercontent.com/99643269/155909268-a1cdcce3-fe0d-43d8-a330-8d762fb9564c.png)
+
 
 
 	
