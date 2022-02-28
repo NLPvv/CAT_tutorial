@@ -1207,12 +1207,14 @@ fi
 	
 这是我修改参数后的6次实验如下：
 	
-	![1646010514(1)](https://user-images.githubusercontent.com/99643269/155908703-f03779c9-9280-4d5d-8ec6-4d88432e8d7e.jpg)
+	![1646010514(1)](https://user-images.githubusercontent.com/99643269/155908876-1ecce2fd-1284-4c24-bd8f-764e4dce1dd1.jpg)
+
 
 
 最好的一次VGGBLSTM结果图如下：
 	
-	![monitor](https://user-images.githubusercontent.com/99643269/155908768-3bb60367-65fa-4ebc-8e00-6370d41458fd.png)
+	![monitor](https://user-images.githubusercontent.com/99643269/155908900-9fe3122d-b223-43f8-88e7-cc60a260a464.png)
+
 
 	
 	
