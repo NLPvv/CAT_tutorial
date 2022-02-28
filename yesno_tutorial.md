@@ -1204,9 +1204,14 @@ fi
 └── utils -> /myhome/kaldi/egs/wsj/s5/utils
 ```
 ## 7. 结果分析
+	
 这是我修改参数后的6次实验如下：
+	
 	![1645774499(1)](https://user-images.githubusercontent.com/99643269/155674174-7d8791d1-7f68-4669-8f58-ff5a00deefbe.jpg)
-最好的一次VGGBLSTM结果图如下：
+
+	最好的一次VGGBLSTM结果图如下：
+	
+	
 	![monitor](https://user-images.githubusercontent.com/99643269/155674568-d57ed068-c2a7-430e-9959-1ae6b543e2b8.png)
 	
 	
