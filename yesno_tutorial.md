@@ -1206,8 +1206,8 @@ fi
 ## 7. 结果分析
 	
 这是我修改参数后的6次实验如下：
-	
-	![1646010514(1)](https://user-images.githubusercontent.com/99643269/155908876-1ecce2fd-1284-4c24-bd8f-764e4dce1dd1.jpg)
+	![1646010514(1)](https://user-images.githubusercontent.com/99643269/155909185-e9fa3cf5-cc3c-44a1-a5be-bdca8312f195.jpg)
+
 
 
 
