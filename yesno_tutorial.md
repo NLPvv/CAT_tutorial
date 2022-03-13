@@ -14,14 +14,15 @@
 * [4.神经网络训练准备](#4-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E8%AE%AD%E7%BB%83%E5%87%86%E5%A4%87)
 * [5.模型训练](#5-%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83)
 * [6.解码](#6-%E8%A7%A3%E7%A0%81)
-* [7.结果分析](#7-结果分析)
+* [7.实验展示](#7-实验展示)
+* [8.结果分析](#8-结果分析)
 
 此文档的目的是让大家了解kaldi工具包的使用，**通过搭建一个简单的语音识别项目，帮助初学者更多了解CAT的工作流程，先知其然，在知其所以然，如果想要更多了解建议进一步阅读以下基本文献。
 
-- L. R. Rabiner, “A tutorial on hidden Markov models and selected applications in speech recognition”, Proceedings of the IEEE, 1989.
-- A. Graves, S. Fernandez, F. Gomez, and J. Schmidhuber, “Connectionist temporal classiﬁcation: Labelling unsegmented sequence data with recurrent neural networks”, ICML, 2006.
-- Hongyu Xiang, Zhijian Ou, "CRF-based Single-stage Acoustic Modeling with CTC Topology", ICASSP, 2019.
-- Zhijian Ou, "State-of-the-Art of End-to-End Speech Recognition", Tutorial at The 6th Asian Conference on Pattern Recognition (ACPR2021), Jeju Island, Korea, 2021.
+- L. R. Rabiner, “A tutorial on hidden Markov models and selected applications in speech recognition”, Proceedings of the IEEE, 1989.[PDF](https://web.ece.ucsb.edu/Faculty/Rabiner/ece259/Reprints/tutorial%20on%20hmm%20and%20applications.pdf)
+- A. Graves, S. Fernandez, F. Gomez, and J. Schmidhuber, “Connectionist temporal classiﬁcation: Labelling unsegmented sequence data with recurrent neural networks”, ICML, 2006.[PDF](https://www.cs.toronto.edu/~graves/icml_2006.pdf)
+- Hongyu Xiang, Zhijian Ou, "CRF-based Single-stage Acoustic Modeling with CTC Topology", ICASSP, 2019.[PDF](http://oa.ee.tsinghua.edu.cn/~ouzhijian/pdf/ctc-crf.pdf)
+- Zhijian Ou, "State-of-the-Art of End-to-End Speech Recognition", Tutorial at The 6th Asian Conference on Pattern Recognition (ACPR2021), Jeju Island, Korea, 2021.[PDF](http://oa.ee.tsinghua.edu.cn/~ouzhijian/pdf/ACPR2021%20Tutorial%20State-of-the-Art%20of%20End-to-End%20Speech%20Recognition.pdf)
 
 **[CAT workflow](https://github.com/thu-spmi/CAT/blob/master/toolkitworkflow.md)已经整理了CAT的工作流程，分为六步，前五步为训练，第六步是解码。** 这份文档将根据[CAT workflow](https://github.com/thu-spmi/CAT/blob/master/toolkitworkflow.md)，更具体地以一个简单语音识别项目（yesno项目）为例，对CAT工作流程加以解释。
 
@@ -221,7 +222,7 @@ fi
 
 2. 由于数据且没有划分，这部分我们将音频数据集划分为训练集(train)和开发集(dev)
 
-   注：由于数据量较小此处直接将开发集作为测试集，可以修改
+   注：由于数据量较小这里直接将开发集作为测试集，可以修改
 
    ```shell
    echo "Preparing train and dev data"
@@ -323,7 +324,7 @@ fi
 
    **create_yesno_txt.pl**
 
-   创建.txt文件，内容为文件名对应的语句内容。
+   创建.txt文件，内容为文件名对应的文本内容。
 
    ```perl
    #!/usr/bin/env perl
@@ -474,7 +475,7 @@ fi
 
 声学单元的选择有多种，可以是音素phone、英文字母character、汉字、片段wordpiece等。词典（lexicon）的作用是，将待识别的词汇表（vocabulary）中的词分解为声学单元的序列。
 
-1. 由于我们yesno实验所需词典较小，在input/lexicon.txt中
+1. 由于我们yesno实验所需词典较小，词典保存在input/lexicon.txt中
 
    ```
    <SIL> SIL #静音silence
@@ -590,7 +591,7 @@ fi
 
 ### T.fst & L.fst
 
-FST（Finite State Transducers 有限状态转换器）FST常与WFST（Weighted Finite State Transducers 加权有限状态转换器）的称呼混用，与之不同的是WFST在转移路径上附加了权重。安装openfst正是为了使用(W)FST。如下图所示，理论上，一个WFST表示了输入符号序列和输出符号序列的加权关系。
+FST（Finite State Transducers 有限状态转换器）FST常与WFST（Weighted Finite State Transducers 加权有限状态转换器）的称呼混用，与之差异的是WFST在转移路径上附加了权重。安装openfst正是为了使用(W)FST。如下图所示，理论上，一个WFST表示了输入符号序列和输出符号序列的加权关系。
 
 ![image](https://user-images.githubusercontent.com/99643269/155666356-92e92073-0dc9-44af-b535-7a55392f23e6.png)
 
@@ -859,7 +860,8 @@ rm -r $tgt_lang/LG.fst   # We don't need to keep this intermediate FST
 
 到此，我们完成了数据文件的准备以及TLG.fst的生成，TLG.fst画图如下：
 
-![1645786971(1)](https://user-images.githubusercontent.com/99643269/155704389-e49695bb-cbc4-4f68-9483-82126f962e59.jpg)
+![image](https://user-images.githubusercontent.com/99643269/158048121-1f9e2543-d614-4752-96d0-2d0c0f29b98d.png)
+
 
 	
 
@@ -1203,19 +1205,34 @@ fi
 ├── steps -> /myhome/kaldi/egs/wsj/s5/steps
 └── utils -> /myhome/kaldi/egs/wsj/s5/utils
 ```
-## 7. 结果分析
+## 7. 实验展示
 	
-这是我修改参数后的6次实验如下：
-	![1646010514(1)](https://user-images.githubusercontent.com/99643269/155909185-e9fa3cf5-cc3c-44a1-a5be-bdca8312f195.jpg)
-
-
-
-
-最好的一次VGGBLSTM结果图如下：![monitor](https://user-images.githubusercontent.com/99643269/155909268-a1cdcce3-fe0d-43d8-a330-8d762fb9564c.png)
-
-
-
+以下是一次默认训练结果展示：
 	
+![monitor](https://user-images.githubusercontent.com/99643269/158049088-f21ea54a-66be-43cd-801b-ad05cea6e2b0.png)
+
+识别结果如下：
 	
+```
+%WER 5.83 [ 14 / 240, 1 ins, 13 del, 0 sub ] 
+```
+
+识别的详细log在exp/demo/decode_test中。
+
+在训练完成后，请在demo文件夹下自动生成的readme.md文件中对你的这次实验进行记录。
+
+## 8. 结果分析
 	
+**我们利用`waves_yesno`提供的60条语音数据按照5：5将数据分为训练集和验证集**	
 	
+**定义合适的学习率、迭代次数，根据梯度下降方法对模型进行分别的训练，并记录每一次训练的平均损失函数值**
+
+以下是进行8次实验的结果对比：
+	
+![image](https://user-images.githubusercontent.com/99643269/158049903-7fccdc78-8ef7-4b95-af1a-1f213dd96b15.png)
+
+**实验结果可以看出CAT(ctc-crf)要优于ctc，由于yesno实验数据简单生成的语言模型并不复杂所以1-gram要比多阶语言模型效果更好**
+	
+**也可以尝试修改`exp/demo/config.jsn`中参数尝试多次训练**
+
+**🐱‍🏍**	
