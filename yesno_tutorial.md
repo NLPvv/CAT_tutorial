@@ -684,7 +684,7 @@ Y 3
 
 **T.fst**
 
-![T.fst(change)](T.fst(no NOISE).png)
+![T.fst(change)](https://github.com/NLPvv/CAT_tutorial/blob/main/assets/assets/T.fst(no%20NOISE).png)
 
 
 
