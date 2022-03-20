@@ -684,7 +684,7 @@ Y 3
 
 **T.fst**
 
-![T.fst(change)](assets/assets/T.fst(no NOISE).png)
+![T.fst(change)](T.fst(no NOISE).png)
 
 
 
