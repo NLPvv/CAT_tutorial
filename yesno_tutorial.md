@@ -684,7 +684,8 @@ Y 3
 
 **T.fst**
 
-![image](https://user-images.githubusercontent.com/99643269/155668843-2d4f220a-e620-460e-ba80-3f4af00ce5b6.png)
+![T.fst(change)](assets/assets/T.fst(no NOISE).png)
+
 
 
 **L.fst**
