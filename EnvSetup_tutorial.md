@@ -193,7 +193,6 @@ CAT-v1: https://github.com/thu-spmi/CAT/tree/v1#Installation
 - 阮一峰的Git[命令清单][9]
 - git --help
 
-![Git workflow by 阮一峰](./assets/git-workflow-ryf.png)
 
 ### Markdown
 

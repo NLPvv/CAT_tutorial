@@ -593,7 +593,7 @@ fi
 
 FST（Finite State Transducers 有限状态转换器）FST常与WFST（Weighted Finite State Transducers 加权有限状态转换器）的称呼混用，与之差异的是WFST在转移路径上附加了权重。安装openfst正是为了使用(W)FST。如下图所示，理论上，一个WFST表示了输入符号序列和输出符号序列的加权关系。
 
-![image](https://user-images.githubusercontent.com/99643269/155666356-92e92073-0dc9-44af-b535-7a55392f23e6.png)
+![WFST](assets/WFST.png)
 
 
 想要了解更多了解以下文献：
@@ -650,12 +650,12 @@ Y 5
 
 **T.fst**
 
-![image](https://user-images.githubusercontent.com/99643269/155668440-0c073e34-b1b1-4eed-81ef-c0c9f571996b.png)
+![T.fst](assets/T.fst.png)
 
 
 **L.fst**（注：如果L.fst中没有#3的话，则T.fst中#3也没有必要。历史上若使用HMM拓扑，则需要引入SIL unit，每个词汇可接SIL也可以不接，因而L.fst需要#3进行消岐。本例使用CTC拓扑，L.fst不用#3）
 
-![image](https://user-images.githubusercontent.com/99643269/155668677-170b184b-d4ee-41ee-97b3-70b0e76c0390.png)
+![L.fst](assets/L.fst.png)
 
 
 为方便观察，我们去掉\<NOISE\>,  \<SPOKEN_NOISE\>展示fst生成图，当前：
@@ -684,13 +684,12 @@ Y 3
 
 **T.fst**
 
-![T.fst(change)](https://github.com/NLPvv/CAT_tutorial/blob/main/assets/assets/T.fst(no%20NOISE).png)
-
+![T.fst(new)](https://github.com/HPLQAQ/CAT/blob/master/assets/T.fst(no%20NOISE).png)
 
 
 **L.fst**
 
-![image](https://user-images.githubusercontent.com/99643269/155668907-978dea70-0df2-45f9-9e77-e633174c1d43.png)
+![L.fst(new)](https://github.com/HPLQAQ/CAT/blob/master/assets/L.fst(no%20NOISE).png)
 
 
 ### G.fst
@@ -803,7 +802,7 @@ ngram 1=7
 
 **G.fst**
 
-![image](https://user-images.githubusercontent.com/99643269/155669557-3ab9d8db-98eb-48a7-8de5-13a461d404c0.png)
+![G.fst](assets/G.fst.png)
 
 
 ### TLG.fst
@@ -861,7 +860,7 @@ rm -r $tgt_lang/LG.fst   # We don't need to keep this intermediate FST
 
 到此，我们完成了数据文件的准备以及TLG.fst的生成，TLG.fst画图如下：
 
-![image](https://user-images.githubusercontent.com/99643269/158048121-1f9e2543-d614-4752-96d0-2d0c0f29b98d.png)
+![TLG.fst](assets/TLG.png)
 
 
 	
