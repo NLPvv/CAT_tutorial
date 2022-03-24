@@ -593,7 +593,7 @@ fi
 
 FST（Finite State Transducers 有限状态转换器）FST常与WFST（Weighted Finite State Transducers 加权有限状态转换器）的称呼混用，与之差异的是WFST在转移路径上附加了权重。安装openfst正是为了使用(W)FST。如下图所示，理论上，一个WFST表示了输入符号序列和输出符号序列的加权关系。
 
-![WFST](assets/WFST.png)
+![WFST](assets/assets/WFST.png)
 
 
 想要了解更多了解以下文献：
@@ -650,12 +650,12 @@ Y 5
 
 **T.fst**
 
-![T.fst](assets/T.fst.png)
+![T.fst](assets/assets/T.fst.png)
 
 
 **L.fst**（注：如果L.fst中没有#3的话，则T.fst中#3也没有必要。历史上若使用HMM拓扑，则需要引入SIL unit，每个词汇可接SIL也可以不接，因而L.fst需要#3进行消岐。本例使用CTC拓扑，L.fst不用#3）
 
-![L.fst](assets/L.fst.png)
+![L.fst](assets/assets/L.fst.png)
 
 
 为方便观察，我们去掉\<NOISE\>,  \<SPOKEN_NOISE\>展示fst生成图，当前：
@@ -802,7 +802,7 @@ ngram 1=7
 
 **G.fst**
 
-![G.fst](assets/G.fst.png)
+![G.fst](assets/assets/G.fst.png)
 
 
 ### TLG.fst
