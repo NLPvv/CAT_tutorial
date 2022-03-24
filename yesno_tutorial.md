@@ -860,7 +860,7 @@ rm -r $tgt_lang/LG.fst   # We don't need to keep this intermediate FST
 
 到此，我们完成了数据文件的准备以及TLG.fst的生成，TLG.fst画图如下：
 
-![TLG.fst](assets/TLG.png)
+![TLG.fst](assets/assets/TLG.png)
 
 
 	
