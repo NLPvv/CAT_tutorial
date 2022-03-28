@@ -1102,7 +1102,7 @@ Step 5: [Model training](https://github.com/thu-spmi/CAT/blob/master/toolkitwork
 | n_layers     | 神经网络循环层数                                                             |
 | idim         | 输入特征的维度                                                               |
 | hdim         | 神经网络每个隐藏层中的单元数                                                  |
-| num_classes  | 神经网络输出层数一般为音素集合数+1(phone+1)                                                         |
+| num_classes  | 神经网络输出层数一般为音素集合数+1(phone+1 for phone-based model).(char+1 for char-based model)                                                         |
 | dropout      | 防止过拟合(默认0.5)                                                          |
 | optimizer    | 优化器(默认Adam)                                                             |
 | lr           | 学习率大小                                                                   |
