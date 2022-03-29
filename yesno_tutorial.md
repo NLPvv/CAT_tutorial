@@ -992,8 +992,9 @@ fi
  │   └── raw_fbank_train_sp.1.scp	
  ```
 	
-	
-	
+其中ark文件为FBank提取的特征向量;scp文件是音频文件或说话人与相应的ark文件对应的相对关系
+
+前缀cmvn为说话人(egs:global /...../cmvn_dev_sp.ark:7);raw为音频文件(egs:0_1_1_1_1_1_1_1 /...../raw_fbank_dev_sp.1.ark:16)
 	
 ## 3. 准备分母图语言模型
 
