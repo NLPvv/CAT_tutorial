@@ -974,6 +974,27 @@ fi
 
 * steps/compute_cmvn_stats.sh：特征归一化，cmvn是指cepstra mean and variance normalization，即减去均值除以标准差的操作。早期语音识别中提取的音频特征是倒谱，故由此得名。在FBank特征得归一化处理，也沿用了该称呼。
 
+通过这部分脚本的运行，会生成fbank目录内容如下：
+
+ ```
+ ├── fbank
+ │   ├── cmvn_dev_sp.ark 
+ │   ├── cmvn_dev_sp.scp
+ │   ├── cmvn_test.ark
+ │   ├── cmvn_test.scp
+ │   └── cmvn_train_sp.ark
+ │   ├── cmvn_train_sp.scp
+ │   ├── raw_fbank_dev_sp.1.ark
+ │   ├── raw_fbank_dev_sp.1.scp
+ │   ├── raw_fbank_test_sp.1.ark
+ │   └── raw_fbank_test_sp.1.scp
+ │   ├── raw_fbank_train_sp.1.ark
+ │   └── raw_fbank_train_sp.1.scp	
+ ```
+	
+	
+	
+	
 ## 3. 准备分母图语言模型
 
 Step 3: [Denominator LM preparation](https://github.com/thu-spmi/CAT/blob/master/toolkitworkflow.md#Denominator-LM-preparation)
