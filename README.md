@@ -70,8 +70,9 @@ Please cite CAT using:
 
   Comparison between v2 and v1: 
 
-| Branch     | Flexible configuration | Easily reproduce | Distributed training | Chunk streaming model | Recipes                                            |
-| ---------- | ---------------------- | ---------------- | -------------------- | --------------------- | -------------------------------------------------- |
-| v1         |                        |                  | ✅                    | ✅                     | aishell, formosa, hkust, libri, swbd, thchs30, wsj |
-| v2 (master) | ✅                      | ✅                | ✅                    |                       | swbd, wsj, libri, commonvoice German                     |
-
+| 工具     | 流式识别 | 准确率 | 语言模型 | 训练速度           |
+| ---------- | ---------------- | ---------------- | -------------------- | --------------------- | 
+| kaldi     |    ✅       | ✅         | ✅                     | ✅ |
+| k2 | ✅                      | ✅                | ✅                    |  ✅             |     
+| espnet| ❌                    | ✅✅             | ✅                    |     ✅                  | 
+| CAT |  ✅                      | ✅✅              | ✅✅                 | ✅✅                     | 
