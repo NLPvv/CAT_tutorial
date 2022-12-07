@@ -75,4 +75,5 @@ Please cite CAT using:
 | kaldi     |    ✅       | ✅         | ✅                     | ✅ |
 | k2 | ✅                      | ✅                | ✅                    |  ✅             |     
 | espnet| ❌                    | ✅✅             | ✅                    |     ✅                  | 
+| Wenet | ✅                      | ✅✅             | ✅✅                    |❌            | 
 | CAT |  ✅                      | ✅✅              | ✅✅                 | ✅✅                     | 
